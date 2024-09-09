@@ -3,8 +3,12 @@ import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import Notification from "./components/Notification";
+import LoginForm from "./components/LoginForm";
+import Login from "./services/login";
 
 const App = () => {
+  const [loginVisible, setLoginVisible] = useState(false);
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [newBlogTitle, setNewBlogTitle] = useState("");
@@ -72,41 +76,49 @@ const App = () => {
     });
   };
 
-  if (user === null) {
+  const loginForm = () => {
+    const hiddenWhenVisible = { display: loginVisible ? "none" : "" };
+    const showWhenVisible = { display: loginVisible ? "" : "none" };
+
     return (
       <div>
-        <h2>Log in to application</h2>
-        <Notification message={errorMessage} type="error" />
-
-        <form onSubmit={handleLogin}>
-          <div>
-            username
-            <input
-              type="text"
-              value={username}
-              name="Username"
-              onChange={({ target }) => setUsername(target.value)}
-            ></input>
-          </div>
-          <div>
-            password
-            <input
-              type="password"
-              value={password}
-              name="Password"
-              onChange={({ target }) => setPassword(target.value)}
-            ></input>
-          </div>
-          <button type="submit">login</button>
-        </form>
+        <div style={hiddenWhenVisible}>
+          <button
+            onClick={() => {
+              setLoginVisible(true);
+            }}
+          >
+            log in
+          </button>
+        </div>
+        <div style={showWhenVisible}>
+          <LoginForm
+            username={username}
+            password={password}
+            handlePasswordChange={({ target }) => {
+              setPassword(target.value);
+            }}
+            handleUsernameChange={({ target }) => {
+              setUsername(target.value);
+            }}
+          ></LoginForm>
+          <button
+            onClick={() => {
+              setLoginVisible(false);
+            }}
+          >
+            cancel
+          </button>
+        </div>
       </div>
     );
-  }
+  };
 
   return (
     <div>
       <h2>blogs</h2>
       <Notification message={successMessage} type="success" />
+      <Notification message={errorMessage} type="error" />
 
       <button onClick={handleLogout}>logout</button>
 
