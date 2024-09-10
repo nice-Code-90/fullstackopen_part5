@@ -59,19 +59,41 @@ const App = () => {
     blogFormRef.current.toggleVisibility();
 
     blogService.create(newObject).then((returnedBlog) => {
-      setBlogs(blogs.concat(returnedBlog));
+      const blogWithUser = {
+        ...returnedBlog,
+        user: { id: user.id },
+      };
+      setBlogs(blogs.concat(blogWithUser));
     });
   };
 
+  const deleteBlog = (blogId, blogAuthor, blogTitle) => {
+    if (
+      window.confirm(`Do you like to delete ${blogTitle} from ${blogAuthor}`)
+    ) {
+      try {
+        blogService.deleteBlog(blogId);
+        setBlogs(blogs.filter((blog) => blog.id !== blogId));
+      } catch (e) {
+        console.log("error deleting blog: ", error);
+      }
+    }
+  };
+
   const updateBlog = (targetedBlogId) => {
-    let likes = blogs.find((blog) => blog.id === targetedBlogId).likes;
-    const changedBlog = { likes: ++likes };
+    const blogToUpdate = blogs.find((blog) => blog.id === targetedBlogId);
+    const updatedBlog = { ...blogToUpdate, likes: blogToUpdate.likes + 1 };
+
     blogService
-      .update(targetedBlogId, changedBlog)
+      .update(targetedBlogId, updatedBlog)
       .then((returnedBlog) => {
+        const blogWithUser = {
+          ...returnedBlog,
+          user: blogToUpdate.user,
+        };
         setBlogs(
           blogs.map((blog) =>
-            blog.id !== targetedBlogId ? blog : returnedBlog
+            blog.id !== targetedBlogId ? blog : blogWithUser
           )
         );
       })
@@ -141,9 +163,17 @@ const App = () => {
           {blogForm()}
         </div>
       )}
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
-      ))}
+      {blogs
+        .sort((a, b) => b.likes - a.likes)
+        .map((blog) => (
+          <Blog
+            key={blog.id}
+            blog={blog}
+            userId={user ? user.id : null}
+            updateBlog={updateBlog}
+            deleteBlog={deleteBlog}
+          />
+        ))}
     </div>
   );
 };
