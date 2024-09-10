@@ -1,19 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
-import Login from "./services/login";
+import Togglable from "./components/Togglable";
+import BlogForm from "./components/BlogForm";
 
 const App = () => {
   const [loginVisible, setLoginVisible] = useState(false);
-
+  const blogFormRef = useRef();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [newBlogTitle, setNewBlogTitle] = useState("");
-  const [newBlogAuthor, setNewBlogAuthor] = useState("");
-  const [newBlogUrl, setNewBlogUrl] = useState("");
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -57,22 +55,11 @@ const App = () => {
     }
   };
 
-  const addNew = async (event) => {
-    event.preventDefault();
-    const newObject = {
-      title: newBlogTitle,
-      author: newBlogAuthor,
-      url: newBlogUrl,
-    };
+  const addBlog = (newObject) => {
+    blogFormRef.current.toggleVisibility();
+
     blogService.create(newObject).then((returnedBlog) => {
       setBlogs(blogs.concat(returnedBlog));
-      setSuccessMessage(`a new blog ${newBlogTitle} by ${newBlogAuthor} added`);
-      setTimeout(() => {
-        setSuccessMessage(null);
-      }, 5000);
-      setNewBlogTitle("");
-      setNewBlogAuthor("");
-      setNewBlogUrl("");
     });
   };
 
@@ -101,6 +88,7 @@ const App = () => {
             handleUsernameChange={({ target }) => {
               setUsername(target.value);
             }}
+            handleSubmit={handleLogin}
           ></LoginForm>
           <button
             onClick={() => {
@@ -113,55 +101,25 @@ const App = () => {
       </div>
     );
   };
-
+  const blogForm = () => (
+    <Togglable buttonLabel="new blog" ref={blogFormRef}>
+      <BlogForm createBlog={addBlog} />
+    </Togglable>
+  );
   return (
     <div>
       <h2>blogs</h2>
       <Notification message={successMessage} type="success" />
       <Notification message={errorMessage} type="error" />
+      {!user && loginForm()}
+      {user && (
+        <div>
+          <p>{user.name} logged in in</p>
+          <button onClick={handleLogout}>logout</button>
 
-      <button onClick={handleLogout}>logout</button>
-
-      <p>{user.name} logged in</p>
-      <div>
-        <h2>create new</h2>
-        <form onSubmit={addNew}>
-          <div>
-            title:
-            <input
-              type="text"
-              value={newBlogTitle}
-              name="Title"
-              onChange={({ target }) => {
-                setNewBlogTitle(target.value);
-              }}
-            ></input>
-          </div>
-          <div>
-            author:
-            <input
-              type="text"
-              value={newBlogAuthor}
-              name="Author"
-              onChange={({ target }) => {
-                setNewBlogAuthor(target.value);
-              }}
-            ></input>
-          </div>
-          <div>
-            url:
-            <input
-              type="text"
-              value={newBlogUrl}
-              name="Url"
-              onChange={({ target }) => {
-                setNewBlogUrl(target.value);
-              }}
-            ></input>
-          </div>
-          <button type="submit">Add new</button>
-        </form>
-      </div>
+          {blogForm()}
+        </div>
+      )}
       {blogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />
       ))}
