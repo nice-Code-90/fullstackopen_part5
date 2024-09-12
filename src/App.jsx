@@ -15,7 +15,6 @@ const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(null);
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -30,7 +29,7 @@ const App = () => {
     }
   }, []);
 
-  const handleLogout = async (e) => {
+  const handleLogout = async () => {
     window.localStorage.removeItem("loggedBlogappUser");
     blogService.setToken(null);
     window.location.reload();
@@ -75,7 +74,7 @@ const App = () => {
         blogService.deleteBlog(blogId);
         setBlogs(blogs.filter((blog) => blog.id !== blogId));
       } catch (e) {
-        console.log("error deleting blog: ", error);
+        console.log("error deleting blog: ", e);
       }
     }
   };
@@ -152,7 +151,6 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification message={successMessage} type="success" />
       <Notification message={errorMessage} type="error" />
       {!user && loginForm()}
       {user && (
