@@ -19,19 +19,20 @@ const Blog = ({ blog, updateBlog, userId, deleteBlog }) => {
   };
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className="blog">
       <div>
         {blog.title}
+        {" by: "}
+        {blog.author}
         <button onClick={handleViewChange}>{buttonContent}</button>
       </div>
       {buttonContent === "hide" && (
-        <div>
+        <div className="togglableContent">
           <div>{blog.url}</div>
           <div>
             likes {blog.likes}{" "}
             <button onClick={() => updateBlog(blog.id)}>like</button>
           </div>
-          <div> {blog.author}</div>
           {blog.user.id === userId && (
             <div>
               <button
