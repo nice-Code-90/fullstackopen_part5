@@ -13,6 +13,7 @@ const BlogForm = ({ createBlog }) => {
       url: newBlogUrl,
     });
   };
+
   return (
     <div>
       <h2>Create a new blog</h2>
@@ -21,25 +22,30 @@ const BlogForm = ({ createBlog }) => {
         <div>
           title:
           <input
+            data-testid="titleInputText"
             value={newBlogTitle}
             onChange={(event) => setNewBlogTitle(event.target.value)}
-          ></input>
+          />
         </div>
         <div>
           author:
           <input
+            data-testid="authorInputText"
             value={newBlogAuthor}
             onChange={(event) => setNewBlogAuthor(event.target.value)}
-          ></input>{" "}
+          />
         </div>
         <div>
           url:
           <input
+            data-testid="urlInputText"
             value={newBlogUrl}
             onChange={(event) => setNewBlogUrl(event.target.value)}
-          ></input>
+          />
         </div>
-        <button type="submit">save</button>
+        <button type="submit" data-testid="submitButton">
+          save
+        </button>
       </form>
     </div>
   );

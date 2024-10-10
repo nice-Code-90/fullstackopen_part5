@@ -20,7 +20,7 @@ const Blog = ({ blog, updateBlog, userId, deleteBlog }) => {
 
   return (
     <div style={blogStyle} className="blog">
-      <div>
+      <div className="blogDatas">
         {blog.title}
         {" by: "}
         {blog.author}
