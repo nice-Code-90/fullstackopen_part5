@@ -24,14 +24,21 @@ const Blog = ({ blog, updateBlog, userId, deleteBlog }) => {
         {blog.title}
         {" by: "}
         {blog.author}
-        <button onClick={handleViewChange}>{buttonContent}</button>
+        <button data-testid="blogDataViewToggle" onClick={handleViewChange}>
+          {buttonContent}
+        </button>
       </div>
       {buttonContent === "hide" && (
         <div className="togglableContent">
           <div>{blog.url}</div>
           <div>
             likes {blog.likes}{" "}
-            <button onClick={() => updateBlog(blog.id)}>like</button>
+            <button
+              data-testid="like-button"
+              onClick={() => updateBlog(blog.id)}
+            >
+              like
+            </button>
           </div>
           {blog.user.id === userId && (
             <div>
