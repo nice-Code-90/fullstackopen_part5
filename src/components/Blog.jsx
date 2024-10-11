@@ -43,6 +43,7 @@ const Blog = ({ blog, updateBlog, userId, deleteBlog }) => {
           {blog.user.id === userId && (
             <div>
               <button
+                data-testid="delete-blog"
                 onClick={() => deleteBlog(blog.id, blog.author, blog.title)}
               >
                 delete

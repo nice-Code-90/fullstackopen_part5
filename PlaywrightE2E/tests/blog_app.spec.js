@@ -70,15 +70,27 @@ describe("When logged in", () => {
   });
 
   test("a new blog can be created", async ({ page }) => {
-    newBlog(page);
+    await newBlog(page);
     await expect(page.locator("text=New Blog Title")).toBeVisible();
   });
 
   test("a blog can be liked", async ({ page }) => {
-    newBlog(page);
+    await newBlog(page);
     await page.click("[data-testid=blogDataViewToggle]");
     await page.click("[data-testid=like-button]");
 
     await expect(page.locator("text=Likes 1")).toBeVisible();
+  });
+
+  test("the user who added the blog can delete the blog", async ({ page }) => {
+    await newBlog(page);
+    await page.click("[data-testid=blogDataViewToggle]");
+    page.on("dialog", async (dialog) => {
+      expect(dialog.type()).toBe("confirm");
+      await dialog.accept();
+    });
+    await page.click("[data-testid=delete-blog]");
+
+    await expect(page.locator("text=New Blog Title")).not.toBeVisible();
   });
 });
