@@ -19,19 +19,26 @@ const Blog = ({ blog, updateBlog, userId, deleteBlog }) => {
   };
 
   return (
-    <div style={blogStyle} className="blog">
-      <div className="blogDatas">
+    <div style={blogStyle} data-testid="blog" className="blog">
+      <div className="blogDatas" data-testid="blog-datas">
         {blog.title}
         {" by: "}
         {blog.author}
-        <button data-testid="blogDataViewToggle" onClick={handleViewChange}>
+        <button
+          data-testid={
+            buttonContent === "view"
+              ? "blogDataViewToggle-view"
+              : "blogDataViewToggle-hide"
+          }
+          onClick={handleViewChange}
+        >
           {buttonContent}
         </button>
       </div>
       {buttonContent === "hide" && (
         <div className="togglableContent">
           <div>{blog.url}</div>
-          <div>
+          <div data-testid="likes">
             likes {blog.likes}{" "}
             <button
               data-testid="like-button"
