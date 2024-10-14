@@ -188,28 +188,36 @@ describe("When logged in", () => {
       dummyBlogEntry.author,
       dummyBlogEntry.webPage
     );
+    await page.waitForTimeout(500);
+
     await newBlog(
       page,
       dummyBlogEntry2.title,
       dummyBlogEntry2.author,
       dummyBlogEntry2.webPage
     );
+    await page.waitForTimeout(500);
+
     await newBlog(
       page,
       dummyBlogEntry3.title,
       dummyBlogEntry3.author,
       dummyBlogEntry3.webPage
     );
+    await page.waitForTimeout(500);
+
     const likeBlog = async (title, times) => {
-      const blogElement = await page.locator(
+      const blogElement = page.locator(
         `[data-testid=blog]:has-text("${title}")`
       );
+      await blogElement.waitFor({ state: "visible", timeout: 15000 });
       await blogElement
         .locator("[data-testid=blogDataViewToggle-view]")
         .click();
       const likeButton = blogElement.locator('[data-testid="like-button"]');
       for (let i = 0; i < times; i++) {
         await likeButton.click();
+        await page.waitForTimeout(500);
       }
       await blogElement
         .locator("[data-testid=blogDataViewToggle-hide]")
@@ -223,6 +231,7 @@ describe("When logged in", () => {
     const blogElements = await page.locator("[data-testid=blog]").all();
     const blogLikes = [];
     for (const blogElement of blogElements) {
+      await blogElement.waitFor({ state: "visible", timeout: 15000 });
       await blogElement
         .locator("[data-testid=blogDataViewToggle-view]")
         .click();
