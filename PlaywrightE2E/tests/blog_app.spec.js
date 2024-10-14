@@ -40,7 +40,7 @@ async function newBlog(page, title, author, webPage) {
 
 describe("Blog app", () => {
   beforeEach(async ({ page, request }) => {
-    request.post("http://localhost:3003/api/testing/reset");
+    await request.post("http://localhost:3003/api/testing/reset");
 
     await request.post("http://localhost:3003/api/users", {
       data: {
